@@ -1,0 +1,130 @@
+<!-- Header Section -->
+<div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white py-8">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-bold mb-2">Target & Progres</h1>
+        <p class="text-purple-100">Pantau dan capai target fitnessmu</p>
+      </div>
+      <app-button label="+ Buat Goal" (onClick)="onCreateGoal()"></app-button>
+    </div>
+  </div>
+</div>
+
+<!-- Stats Overview -->
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="grid md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
+      <div class="text-3xl font-bold text-purple-600 mb-2">4</div>
+      <div class="text-gray-600">Total Goals</div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
+      <div class="text-3xl font-bold text-green-600 mb-2">1</div>
+      <div class="text-gray-600">Tercapai</div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
+      <div class="text-3xl font-bold text-blue-600 mb-2">3</div>
+      <div class="text-gray-600">Dalam Progres</div>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
+      <div class="text-3xl font-bold text-orange-600 mb-2">75%</div>
+      <div class="text-gray-600">Rata-rata Progres</div>
+    </div>
+  </div>
+</div>
+
+<!-- Goals List -->
+<div class="max-w-6xl mx-auto px-4 pb-8">
+  <h2 class="text-2xl font-bold text-gray-900 mb-6">Daftar Target</h2>
+
+  <div class="grid gap-6">
+    <div *ngFor="let goal of goals"
+         class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+
+      <div class="flex justify-between items-start mb-4">
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-2">
+            <h3 class="text-xl font-semibold text-gray-900">{{ goal.name }}</h3>
+            <span class="px-3 py-1 text-xs font-medium rounded-full"
+                  [ngClass]="{
+                    'bg-green-100 text-green-800': goal.status === 'completed',
+                    'bg-blue-100 text-blue-800': goal.status === 'in-progress',
+                    'bg-red-100 text-red-800': goal.status === 'overdue'
+                  }">
+              {{ goal.status === 'completed' ? 'Tercapai' :
+                 goal.status === 'in-progress' ? 'Dalam Progres' : 'Terlambat' }}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-4 text-gray-600 text-sm mb-3">
+            <span>📅 Deadline: {{ goal.deadline }}</span>
+            <span>🎯 Target: {{ goal.target }}{{ goal.unit }}</span>
+            <span>📊 Saat ini: {{ goal.current }}{{ goal.unit }}</span>
+          </div>
+        </div>
+
+        <div class="text-right">
+          <div class="text-2xl font-bold text-purple-600">
+            {{ getProgressPercentage(goal) | number:'1.0-0' }}%
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="mb-4">
+        <div class="flex justify-between text-sm text-gray-600 mb-1">
+          <span>Progres</span>
+          <span>{{ goal.current }}/{{ goal.target }} {{ goal.unit }}</span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-3">
+          <div class="h-3 rounded-full transition-all duration-300"
+               [ngClass]="{
+                 'bg-green-500': goal.status === 'completed',
+                 'bg-blue-500': goal.status === 'in-progress',
+                 'bg-red-500': goal.status === 'overdue'
+               }"
+               [style.width.%]="getProgressPercentage(goal)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-2">
+        <button class="flex-1 px-4 py-2 text-sm bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors">
+          Update Progres
+        </button>
+        <button class="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
+          Edit
+        </button>
+        <button class="px-4 py-2 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors">
+          Hapus
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="goals.length === 0" class="text-center py-12">
+    <div class="text-gray-400 text-6xl mb-4">🎯</div>
+    <h3 class="text-xl font-semibold text-gray-900 mb-2">Belum ada target</h3>
+    <p class="text-gray-600 mb-6">Buat target fitness pertamamu untuk memulai perjalanan</p>
+    <app-button label="Buat Target Pertama" (onClick)="onCreateGoal()"></app-button>
+  </div>
+</div>
+
+<!-- Motivation Section -->
+<div class="max-w-6xl mx-auto px-4 pb-8">
+  <div class="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6">
+    <h3 class="font-semibold text-purple-800 mb-3">💪 Motivasi Hari Ini</h3>
+    <p class="text-purple-700 italic">
+      "Target yang besar dimulai dengan langkah kecil. Setiap latihan yang kamu lakukan hari ini adalah investasi untuk versi terbaikmu di masa depan."
+    </p>
+  </div>
+</div>
+
+<!-- Navigation -->
+<div class="fixed bottom-6 right-6">
+  <a routerLink="/" class="bg-purple-500 text-white p-4 rounded-full shadow-lg hover:bg-purple-600 transition-colors">
+    🏠
+  </a>
+</div>
