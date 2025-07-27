@@ -31,6 +31,68 @@ export class PlansPageComponent {
     { day: 'Minggu', plan: 'Rest Day', status: 'upcoming' }
   ];
 
+  // Properties for search and filter
+  searchText = '';
+  selectedType = 'all';
+  filteredTemplates = [...this.templates];
+
+  // Available workout types for filter
+  workoutTypes = [
+    { value: 'all', label: 'Semua Tipe' },
+    { value: 'Strength', label: 'Strength' },
+    { value: 'Cardio', label: 'Cardio' }
+  ];
+
+  // Days of the week for filter
+  days = [
+    { value: 'all', label: 'Semua Hari' },
+    { value: 'Senin', label: 'Senin' },
+    { value: 'Selasa', label: 'Selasa' },
+    { value: 'Rabu', label: 'Rabu' },
+    { value: 'Kamis', label: 'Kamis' },
+    { value: 'Jumat', label: 'Jumat' },
+    { value: 'Sabtu', label: 'Sabtu' },
+    { value: 'Minggu', label: 'Minggu' }
+  ];
+  selectedDay = 'all';
+
+  ngOnInit() {
+    this.applyFilters();
+  }
+
+  // Method to handle search and filter
+  applyFilters() {
+    this.filteredTemplates = this.templates.filter(template => {
+      // Filter by search text
+      const matchesSearch = this.searchText === '' ||
+        template.name.toLowerCase().includes(this.searchText.toLowerCase()) ||
+        template.exercises.some(ex => ex.toLowerCase().includes(this.searchText.toLowerCase()));
+
+      // Filter by type
+      const matchesType = this.selectedType === 'all' || template.type === this.selectedType;
+
+      // Filter by day
+      const matchesDay = this.selectedDay === 'all' || template.day === this.selectedDay;
+
+      return matchesSearch && matchesType && matchesDay;
+    });
+  }
+
+  // Method to handle search input changes
+  onSearchChange() {
+    this.applyFilters();
+  }
+
+  // Method to handle type filter changes
+  onTypeChange() {
+    this.applyFilters();
+  }
+
+  // Method to handle day filter changes
+  onDayChange() {
+    this.applyFilters();
+  }
+
   onCreateTemplate() {
     alert('Fitur buat template akan segera hadir!');
   }

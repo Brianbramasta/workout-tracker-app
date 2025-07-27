@@ -52,9 +52,58 @@
 <!-- Templates Section -->
 <div class="max-w-6xl mx-auto px-4 pb-8">
   <h2 class="text-2xl font-bold text-gray-900 mb-6">Template Latihan</h2>
+  
+  <!-- Search and Filter Section -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Search Input -->
+      <div>
+        <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Cari Template</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <span class="text-gray-500">🔍</span>
+          </div>
+          <input
+            type="text"
+            id="search"
+            [(ngModel)]="searchText"
+            (input)="onSearchChange()"
+            placeholder="Cari nama atau latihan..."
+            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+      </div>
+      
+      <!-- Type Filter -->
+      <div>
+        <label for="typeFilter" class="block text-sm font-medium text-gray-700 mb-1">Filter Tipe</label>
+        <select
+          id="typeFilter"
+          [(ngModel)]="selectedType"
+          (change)="onTypeChange()"
+          class="block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option *ngFor="let type of workoutTypes" [value]="type.value">{{ type.label }}</option>
+        </select>
+      </div>
+      
+      <!-- Day Filter -->
+      <div>
+        <label for="dayFilter" class="block text-sm font-medium text-gray-700 mb-1">Filter Hari</label>
+        <select
+          id="dayFilter"
+          [(ngModel)]="selectedDay"
+          (change)="onDayChange()"
+          class="block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option *ngFor="let day of days" [value]="day.value">{{ day.label }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
   <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <div *ngFor="let template of templates"
+    <div *ngFor="let template of filteredTemplates"
          class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
 
       <div class="flex justify-between items-start mb-4">
@@ -90,11 +139,11 @@
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="templates.length === 0" class="text-center py-12">
+  <div *ngIf="filteredTemplates.length === 0" class="text-center py-12">
     <div class="text-gray-400 text-6xl mb-4">📋</div>
-    <h3 class="text-xl font-semibold text-gray-900 mb-2">Belum ada template</h3>
-    <p class="text-gray-600 mb-6">Buat template latihan untuk memudahkan perencanaan rutinitasmu</p>
-    <app-button label="Buat Template Pertama" (onClick)="onCreateTemplate()"></app-button>
+    <h3 class="text-xl font-semibold text-gray-900 mb-2">Tidak ada template yang ditemukan</h3>
+    <p class="text-gray-600 mb-6">Coba ubah filter atau kata kunci pencarian</p>
+    <app-button label="Buat Template Baru" (onClick)="onCreateTemplate()"></app-button>
   </div>
 </div>
 
