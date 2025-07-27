@@ -1,13 +1,13 @@
 import { Routes } from '@angular/router';
-import { DashboardPageComponent } from './pages/dashboard-page.component';
-import { WorkoutListPageComponent } from './pages/workout-list-page.component';
-import { WorkoutDetailPageComponent } from './pages/workout-detail-page.component';
-import { WorkoutFormPageComponent } from './pages/workout-form-page.component';
-import { PlansPageComponent } from './pages/plans-page.component';
-import { GoalsPageComponent } from './pages/goals-page.component';
-import { StatsPageComponent } from './pages/stats-page.component';
-import { LoginPageComponent } from './pages/login-page.component';
-import { RegisterPageComponent } from './pages/register-page.component';
+import { DashboardPageComponent } from './pages/dashboard/dashboard-page.component';
+import { WorkoutListPageComponent } from './pages/workoutlist/workout-list-page.component';
+import { WorkoutDetailPageComponent } from './pages/workoutdetail/workout-detail-page.component';
+import { WorkoutFormPageComponent } from './pages/workoutform/workout-form-page.component';
+import { PlansPageComponent } from './pages/plans/plans-page.component';
+import { GoalsPageComponent } from './pages/goals/goals-page.component';
+import { StatsPageComponent } from './pages/stats/stats-page.component';
+import { LoginPageComponent } from './pages/login/login-page.component';
+import { RegisterPageComponent } from './pages/register/register-page.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardPageComponent },

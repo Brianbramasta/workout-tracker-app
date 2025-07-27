@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ButtonComponent } from '../components/button.component';
-import { ChartComponent } from '../components/chart.component';
+import { ButtonComponent } from '../../components/button.component';
+import { ChartComponent } from '../../components/chart.component';
 
 @Component({
   selector: 'app-stats-page',

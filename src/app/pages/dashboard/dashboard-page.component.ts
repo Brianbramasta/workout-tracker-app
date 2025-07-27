@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ButtonComponent } from '../components/button.component';
+import { ButtonComponent } from '../../components/button.component';
 
 @Component({
   selector: 'app-dashboard-page',
