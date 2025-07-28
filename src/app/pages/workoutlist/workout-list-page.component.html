@@ -25,14 +25,14 @@
         >
       </div>
       <div class="flex gap-2">
-        <select 
+        <select
           class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500"
           [(ngModel)]="selectedType"
           (ngModelChange)="onTypeChange()"
         >
           <option *ngFor="let type of workoutTypes" [value]="type.value">{{ type.label }}</option>
         </select>
-        <select 
+        <select
           class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500"
           [(ngModel)]="selectedDateRange"
           (ngModelChange)="onDateRangeChange()"
@@ -53,13 +53,23 @@
           <div class="flex items-center gap-3 mb-2">
             <h3 class="text-xl font-semibold text-gray-900">{{ workout.name }}</h3>
             <span class="px-3 py-1 text-xs font-medium rounded-full"
-                  [ngClass]="workout.type === 'Strength' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'">
+                  [ngClass]="{
+                    'bg-blue-100 text-blue-800': workout.type === 'Strength',
+                    'bg-green-100 text-green-800': workout.type === 'Cardio',
+                    'bg-purple-100 text-purple-800': workout.type === 'Flexibility',
+                    'bg-orange-100 text-orange-800': workout.type === 'Sports',
+                    'bg-gray-100 text-gray-800': workout.type === 'Other'
+                  }">
               {{ workout.type }}
             </span>
           </div>
           <div class="flex items-center gap-4 text-gray-600 text-sm">
             <span>📅 {{ workout.date }}</span>
             <span>⏱️ {{ workout.duration }}</span>
+            <span *ngIf="workout.exercises.length > 0">🏋️ {{ workout.exercises.length }} latihan</span>
+          </div>
+          <div *ngIf="workout.notes" class="mt-2 text-sm text-gray-500">
+            <p>{{ workout.notes }}</p>
           </div>
         </div>
         <div class="flex gap-2">
@@ -71,6 +81,10 @@
              class="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
             Edit
           </a>
+          <button (click)="deleteWorkout(workout.id)"
+             class="px-4 py-2 text-sm bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors">
+            Hapus
+          </button>
         </div>
       </div>
     </div>

@@ -12,9 +12,9 @@ import { RegisterPageComponent } from './pages/register/register-page.component'
 export const routes: Routes = [
   { path: '', component: DashboardPageComponent },
   { path: 'workouts', component: WorkoutListPageComponent },
-  { path: 'workouts/:id', component: WorkoutDetailPageComponent },
   { path: 'workouts/new', component: WorkoutFormPageComponent },
   { path: 'workouts/:id/edit', component: WorkoutFormPageComponent },
+  { path: 'workouts/:id', component: WorkoutDetailPageComponent },
   { path: 'plans', component: PlansPageComponent },
   { path: 'goals', component: GoalsPageComponent },
   { path: 'stats', component: StatsPageComponent },

@@ -2,96 +2,110 @@
 <div class="bg-gradient-to-r from-lime-500 to-lime-600 text-white py-8">
   <div class="max-w-4xl mx-auto px-4">
     <div class="flex items-center gap-4">
-      <a routerLink="/workouts" class="text-lime-100 hover:text-white transition-colors">
+      <a
+        routerLink="/workouts"
+        class="text-lime-100 hover:text-white transition-colors"
+      >
         ← Kembali
       </a>
-      <div class="flex-1">
-        <h1 class="text-3xl font-bold mb-2">{{ workout.name }}</h1>
-        <div class="flex items-center gap-4 text-lime-100">
-          <span>📅 {{ workout.date }}</span>
-          <span>⏱️ {{ workout.duration }}</span>
-          <span class="px-3 py-1 bg-lime-400 text-lime-900 rounded-full text-sm font-medium">
-            {{ workout.type }}
-          </span>
-        </div>
-      </div>
-      <div class="flex gap-2">
-        <button (click)="onEdit()" class="px-4 py-2 bg-lime-400 text-lime-900 rounded-lg hover:bg-lime-300 transition-colors">
-          Edit
-        </button>
-        <button (click)="onDelete()" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
-          Hapus
-        </button>
+      <div *ngIf="workout">
+        <h1 class="text-3xl font-bold">{{ workout.name }}</h1>
+        <p class="text-lime-100">{{ workout.date }} | {{ workout.duration }}</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Workout Details -->
-<div class="max-w-4xl mx-auto px-4 py-8">
+<!-- Not Found Message -->
+<div *ngIf="notFound" class="max-w-4xl mx-auto px-4 py-12 text-center">
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Latihan Tidak Ditemukan</h2>
+    <p class="text-gray-600 mb-6">Maaf, latihan yang Anda cari tidak ditemukan.</p>
+    <a routerLink="/workouts" class="px-6 py-3 bg-lime-600 text-white rounded-lg hover:bg-lime-700 transition-colors inline-block">
+      Kembali ke Daftar Latihan
+    </a>
+  </div>
+</div>
 
-  <!-- Notes Section -->
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-    <h2 class="text-xl font-semibold text-gray-900 mb-4">Catatan Latihan</h2>
-    <p class="text-gray-700 leading-relaxed">{{ workout.notes }}</p>
+<!-- Workout Detail -->
+<div *ngIf="workout" class="max-w-4xl mx-auto px-4 py-8">
+  <!-- Action Buttons -->
+  <div class="flex justify-end gap-3 mb-6">
+    <button
+      (click)="onEdit()"
+      class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2"
+    >
+      <span>Edit</span>
+    </button>
+    <button
+      (click)="onDelete()"
+      class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors flex items-center gap-2"
+    >
+      <span>Hapus</span>
+    </button>
   </div>
 
-  <!-- Exercises Section -->
-  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-    <h2 class="text-xl font-semibold text-gray-900 mb-6">Daftar Latihan</h2>
+  <!-- Workout Info -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="px-3 py-1 text-xs font-medium rounded-full"
+            [ngClass]="{
+              'bg-blue-100 text-blue-800': workout.type === 'Strength',
+              'bg-green-100 text-green-800': workout.type === 'Cardio',
+              'bg-purple-100 text-purple-800': workout.type === 'Flexibility',
+              'bg-orange-100 text-orange-800': workout.type === 'Sports',
+              'bg-gray-100 text-gray-800': workout.type === 'Other'
+            }">
+        {{ workout.type }}
+      </span>
+    </div>
 
-    <div class="space-y-4">
-      <div *ngFor="let exercise of workout.exercises; let i = index"
-           class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <div class="text-sm text-gray-500 mb-1">Tanggal</div>
+        <div class="font-medium">{{ workout.date }}</div>
+      </div>
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <div class="text-sm text-gray-500 mb-1">Durasi</div>
+        <div class="font-medium">{{ workout.duration }}</div>
+      </div>
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <div class="text-sm text-gray-500 mb-1">Total Set</div>
+        <div class="font-medium">{{ getTotalSets() }}</div>
+      </div>
+    </div>
 
-        <div class="flex justify-between items-start mb-3">
+    <div *ngIf="workout.notes" class="mb-6">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">Catatan</h3>
+      <p class="text-gray-600">{{ workout.notes }}</p>
+    </div>
+  </div>
+
+  <!-- Exercise List -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Daftar Latihan</h3>
+
+    <div *ngIf="workout.exercises.length === 0" class="text-center py-8">
+      <p class="text-gray-500">Belum ada latihan yang ditambahkan</p>
+    </div>
+
+    <div *ngIf="workout.exercises.length > 0" class="space-y-4">
+      <div *ngFor="let exercise of workout.exercises" class="border border-gray-200 rounded-lg p-4">
+        <div class="flex justify-between items-start">
           <div>
-            <h3 class="text-lg font-semibold text-gray-900">{{ i + 1 }}. {{ exercise.name }}</h3>
-            <p class="text-sm text-gray-600">{{ exercise.notes }}</p>
+            <h4 class="font-medium text-gray-900">{{ exercise.name }}</h4>
+            <div class="flex gap-4 text-sm text-gray-600 mt-1">
+              <span>{{ exercise.sets }} set</span>
+              <span>{{ exercise.reps }} rep</span>
+              <span *ngIf="exercise.weight">{{ exercise.weight }} kg</span>
+            </div>
+            <div *ngIf="exercise.notes" class="mt-2 text-sm text-gray-500">
+              <p>{{ exercise.notes }}</p>
+            </div>
           </div>
-          <div class="text-right">
-            <div class="text-sm font-medium text-gray-900">{{ exercise.weight }}</div>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-4 text-sm text-gray-600">
-          <span class="flex items-center gap-1">
-            <span class="w-2 h-2 bg-lime-500 rounded-full"></span>
-            {{ exercise.sets }} set
-          </span>
-          <span class="flex items-center gap-1">
-            <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
-            {{ exercise.reps }} reps
-          </span>
         </div>
       </div>
     </div>
-  </div>
-
-  <!-- Quick Stats -->
-  <div class="grid md:grid-cols-3 gap-6 mt-8">
-    <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-6 text-center">
-      <div class="text-3xl font-bold mb-2">{{ workout.exercises.length }}</div>
-      <div class="text-blue-100">Total Latihan</div>
-    </div>
-
-    <div class="bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl p-6 text-center">
-      <div class="text-3xl font-bold mb-2">{{ getTotalSets() }}</div>
-      <div class="text-green-100">Total Set</div>
-    </div>
-
-    <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl p-6 text-center">
-      <div class="text-3xl font-bold mb-2">{{ workout.duration }}</div>
-      <div class="text-purple-100">Durasi</div>
-    </div>
-  </div>
-
-  <!-- Action Buttons -->
-  <div class="flex gap-4 mt-8">
-    <app-button label="Tambah Latihan Serupa" (onClick)="onEdit()"></app-button>
-    <button class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-      Share Latihan
-    </button>
   </div>
 </div>
 

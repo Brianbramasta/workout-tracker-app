@@ -2,11 +2,14 @@
 <div class="bg-gradient-to-r from-lime-500 to-lime-600 text-white py-8">
   <div class="max-w-4xl mx-auto px-4">
     <div class="flex items-center gap-4">
-      <a routerLink="/workouts" class="text-lime-100 hover:text-white transition-colors">
+      <a
+        routerLink="/workouts"
+        class="text-lime-100 hover:text-white transition-colors"
+      >
         ← Kembali
       </a>
       <div>
-        <h1 class="text-3xl font-bold">Tambah Latihan Baru</h1>
+        <h1 class="text-3xl font-bold">{{ pageTitle }}</h1>
         <p class="text-lime-100">Isi detail latihanmu di bawah ini</p>
       </div>
     </div>
@@ -16,13 +19,15 @@
 <!-- Form Section -->
 <div class="max-w-4xl mx-auto px-4 py-8">
   <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-
     <!-- Alert -->
-    <app-alert *ngIf="showAlert" [type]="alertType" [message]="alertMessage"></app-alert>
+    <app-alert
+      *ngIf="showAlert"
+      [type]="alertType"
+      [message]="alertMessage"
+    ></app-alert>
 
     <!-- Form -->
     <form (ngSubmit)="onSave()" class="space-y-6">
-
       <!-- Nama Latihan -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -35,7 +40,7 @@
           placeholder="Contoh: Push Day, Cardio Run, Yoga Session"
           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
           required
-        >
+        />
       </div>
 
       <!-- Jenis Latihan -->
@@ -66,7 +71,7 @@
           [(ngModel)]="workout.date"
           name="date"
           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
-        >
+        />
       </div>
 
       <!-- Durasi -->
@@ -81,7 +86,7 @@
           placeholder="Contoh: 45 menit, 1 jam, 30 min"
           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
           required
-        >
+        />
       </div>
 
       <!-- Catatan -->
@@ -96,6 +101,162 @@
           placeholder="Catat detail latihan, perasaan, atau target yang dicapai..."
           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent"
         ></textarea>
+      </div>
+
+      <!-- Exercise Section -->
+      <div class="mt-8 pt-6 border-t border-gray-200">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold text-gray-800">Daftar Latihan</h3>
+          <button
+            type="button"
+            (click)="showExerciseForm = true; isEditingExercise = false"
+            class="px-4 py-2 bg-lime-100 text-lime-700 rounded-lg hover:bg-lime-200 transition-colors flex items-center gap-2"
+            *ngIf="!showExerciseForm"
+          >
+            <span>+ Tambah Latihan</span>
+          </button>
+        </div>
+
+        <!-- Exercise Form -->
+        <div *ngIf="showExerciseForm" class="bg-gray-50 p-4 rounded-lg mb-4">
+          <h4 class="font-medium mb-3">
+            {{ isEditingExercise ? "Edit Latihan" : "Tambah Latihan Baru" }}
+          </h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Nama Latihan *</label
+              >
+              <input
+                type="text"
+                [(ngModel)]="newExercise.name"
+                name="exerciseName"
+                placeholder="Contoh: Bench Press, Squat, Deadlift"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-lime-500 focus:border-transparent"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Set</label
+              >
+              <input
+                type="number"
+                [(ngModel)]="newExercise.sets"
+                name="exerciseSets"
+                min="1"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-lime-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Repetisi</label
+              >
+              <input
+                type="number"
+                [(ngModel)]="newExercise.reps"
+                name="exerciseReps"
+                min="1"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-lime-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1"
+                >Berat (kg)</label
+              >
+              <input
+                type="number"
+                [(ngModel)]="newExercise.weight"
+                name="exerciseWeight"
+                min="0"
+                step="0.5"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-lime-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+          <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Catatan (Opsional)</label
+            >
+            <textarea
+              [(ngModel)]="newExercise.notes"
+              name="exerciseNotes"
+              rows="2"
+              placeholder="Catatan tambahan tentang latihan ini..."
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-1 focus:ring-lime-500 focus:border-transparent"
+            ></textarea>
+          </div>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              (click)="addExercise()"
+              class="px-4 py-2 bg-lime-600 text-white rounded-lg hover:bg-lime-700 transition-colors"
+            >
+              {{ isEditingExercise ? "Update" : "Tambah" }}
+            </button>
+            <button
+              type="button"
+              (click)="resetExerciseForm()"
+              class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Batal
+            </button>
+          </div>
+        </div>
+
+        <!-- Exercise List -->
+        <div *ngIf="workout.exercises.length > 0" class="space-y-3 mb-6">
+          <div
+            *ngFor="let exercise of workout.exercises; let i = index"
+            class="border border-gray-200 rounded-lg p-4 bg-white"
+          >
+            <div class="flex justify-between items-start">
+              <div>
+                <h4 class="font-medium text-gray-800">{{ exercise.name }}</h4>
+                <p class="text-sm text-gray-600">
+                  {{ exercise.sets }} set × {{ exercise.reps }} rep
+                  {{
+                    exercise.weight > 0 ? "× " + exercise.weight + " kg" : ""
+                  }}
+                </p>
+                <p *ngIf="exercise.notes" class="text-sm text-gray-500 mt-1">
+                  {{ exercise.notes }}
+                </p>
+              </div>
+              <div class="flex gap-2">
+                <button
+                  type="button"
+                  (click)="editExercise(i)"
+                  class="p-1.5 text-gray-500 hover:text-lime-600 hover:bg-lime-50 rounded transition-colors"
+                >
+                  ✏️
+                </button>
+                <button
+                  type="button"
+                  (click)="deleteExercise(i)"
+                  class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                >
+                  🗑️
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div
+          *ngIf="workout.exercises.length === 0 && !showExerciseForm"
+          class="text-center py-8 border border-dashed border-gray-300 rounded-lg bg-gray-50"
+        >
+          <p class="text-gray-500 mb-2">Belum ada latihan yang ditambahkan</p>
+          <button
+            type="button"
+            (click)="showExerciseForm = true"
+            class="px-4 py-2 bg-lime-100 text-lime-700 rounded-lg hover:bg-lime-200 transition-colors inline-flex items-center gap-2"
+          >
+            <span>+ Tambah Latihan Pertama</span>
+          </button>
+        </div>
       </div>
 
       <!-- Action Buttons -->

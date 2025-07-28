@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../components/button.component';
 import { CardComponent } from '../../components/card.component';
+import { WorkoutService, Workout, Exercise } from '../../services/workout.service';
 
 @Component({
   selector: 'app-workout-detail-page',
@@ -12,36 +13,55 @@ import { CardComponent } from '../../components/card.component';
   templateUrl: './workout-detail-page.component.html',
   styleUrls: ['./workout-detail-page.component.css']
 })
-export class WorkoutDetailPageComponent {
-  // Data dummy untuk detail latihan
-  workout = {
-    id: 1,
-    name: 'Push Day - Upper Body',
-    type: 'Strength',
-    date: '2024-01-15',
-    duration: '75 menit',
-    notes: 'Latihan yang sangat intens! Fokus pada chest dan triceps. Berat beban meningkat dari sesi sebelumnya.',
-    exercises: [
-      { name: 'Bench Press', sets: 4, reps: '8-10', weight: '80kg', notes: 'Fokus pada form yang baik' },
-      { name: 'Shoulder Press', sets: 3, reps: '10-12', weight: '50kg', notes: 'Kontrol gerakan' },
-      { name: 'Incline Dumbbell Press', sets: 3, reps: '12-15', weight: '30kg', notes: 'Burnout set' },
-      { name: 'Tricep Dips', sets: 3, reps: '15-20', weight: 'Bodyweight', notes: 'Sampai failure' },
-      { name: 'Lateral Raises', sets: 3, reps: '15-20', weight: '12kg', notes: 'Light weight, high reps' }
-    ]
-  };
+export class WorkoutDetailPageComponent implements OnInit {
+  workout: Workout | null = null;
+  workoutId = '';
+  notFound = false;
+
+  constructor(
+    private workoutService: WorkoutService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit() {
+    // Get workout ID from route parameters
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.workoutId = id;
+        this.loadWorkout(id);
+      } else {
+        this.notFound = true;
+      }
+    });
+  }
+
+  // Load workout data
+  loadWorkout(id: string) {
+    const workout = this.workoutService.getWorkoutById(id);
+    if (workout) {
+      this.workout = workout;
+    } else {
+      this.notFound = true;
+    }
+  }
 
   onEdit() {
-    window.location.href = `/workouts/${this.workout.id}/edit`;
+    this.router.navigate(['/workouts', this.workoutId, 'edit']);
   }
 
   onDelete() {
     if (confirm('Apakah kamu yakin ingin menghapus latihan ini?')) {
-      alert('Latihan berhasil dihapus!');
-      window.location.href = '/workouts';
+      if (this.workoutService.deleteWorkout(this.workoutId)) {
+        alert('Latihan berhasil dihapus!');
+        this.router.navigate(['/workouts']);
+      }
     }
   }
 
   getTotalSets(): number {
+    if (!this.workout) return 0;
     return this.workout.exercises.reduce((sum, ex) => sum + ex.sets, 0);
   }
 }

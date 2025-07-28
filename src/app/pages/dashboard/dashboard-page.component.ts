@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { ButtonComponent } from '../../components/button.component';
 
 @Component({
@@ -11,8 +11,10 @@ import { ButtonComponent } from '../../components/button.component';
 })
 export class DashboardPageComponent {
   // Logic dashboard di sini
+  constructor(private router: Router) {}
+
   onAddWorkout() {
-    // Navigasi ke halaman tambah latihan
-    window.location.href = '/workouts/new';
+    // Navigasi ke halaman tambah latihan menggunakan Angular Router
+    this.router.navigate(['/workouts/new']);
   }
 }

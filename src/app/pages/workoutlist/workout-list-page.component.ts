@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '../../components/button.component';
 import { CardComponent } from '../../components/card.component';
+import { WorkoutService, Workout } from '../../services/workout.service';
 
 @Component({
   selector: 'app-workout-list-page',
@@ -13,18 +14,16 @@ import { CardComponent } from '../../components/card.component';
   styleUrls: ['./workout-list-page.component.css']
 })
 export class WorkoutListPageComponent implements OnInit {
-  // Data dummy untuk contoh
-  workouts = [
-    { id: 1, name: 'Push Day', date: '2024-01-15', duration: '45 min', type: 'Strength' },
-    { id: 2, name: 'Cardio Run', date: '2024-01-14', duration: '30 min', type: 'Cardio' },
-    { id: 3, name: 'Pull Day', date: '2024-01-13', duration: '50 min', type: 'Strength' }
-  ];
+  // Workouts from service
+  workouts: Workout[] = [];
 
   // Properties for search and filter
   searchText = '';
   selectedType = 'all';
   selectedDateRange = 'all';
-  filteredWorkouts = [...this.workouts];
+  filteredWorkouts: Workout[] = [];
+
+  constructor(private workoutService: WorkoutService, private router: Router) {}
 
   // Available workout types for filter
   workoutTypes = [
@@ -43,7 +42,11 @@ export class WorkoutListPageComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.applyFilters();
+    // Subscribe to workouts from service
+    this.workoutService.getWorkouts().subscribe(workouts => {
+      this.workouts = workouts;
+      this.applyFilters();
+    });
   }
 
   // Method to handle search and filter
@@ -101,7 +104,17 @@ export class WorkoutListPageComponent implements OnInit {
     this.applyFilters();
   }
 
+  // Navigate to add workout page
   onAddWorkout() {
-    window.location.href = '/workouts/new';
+    this.router.navigate(['/workouts/new']);
   }
+
+  // Delete a workout
+  deleteWorkout(id: string) {
+    if (confirm('Apakah Anda yakin ingin menghapus latihan ini?')) {
+      this.workoutService.deleteWorkout(id);
+    }
+  }
+
+
 }
